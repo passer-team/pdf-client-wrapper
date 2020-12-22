@@ -4,8 +4,8 @@ E-mail: xuziqiang@zyheal.com
 """
 import logging
 
-from rpc import pdf_pb2
-import app_config
+from .rpc import pdf_pb2
+from . import app_config
 
 
 def gen_stream(file_path: str):

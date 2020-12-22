@@ -13,7 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://e.coding.net/xymedimg/pdf-server/pdf-client-wrapper.git",
     packages=setuptools.find_packages(),
-    install_requires=['source', 'grpcio'],
+    install_requires=['source', 'grpcio', 'protobuf'],
     entry_points={
     },
     classifiers=(
