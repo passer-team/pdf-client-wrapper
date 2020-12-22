@@ -4,8 +4,8 @@ E-mail: xuziqiang@zyheal.com
 """
 import grpc
 
-from .rpc import pdf_pb2, pdf_pb2_grpc, xy_units_pb2, xy_units_pb2_grpc
-from . import utils
+from pdf_client_wrapper.rpc import pdf_pb2, pdf_pb2_grpc, xy_units_pb2, xy_units_pb2_grpc
+from pdf_client_wrapper import utils
 
 
 class PdfClient:

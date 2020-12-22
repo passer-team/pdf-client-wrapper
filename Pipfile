@@ -9,6 +9,7 @@ pbtc = "*"
 [packages]
 source = "*"
 grpcio = "*"
+pdf-client-wrapper = {editable = true, path = "."}
 
 [requires]
 python_version = "3.8"
