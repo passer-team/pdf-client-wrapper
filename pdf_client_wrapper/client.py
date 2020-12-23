@@ -63,16 +63,30 @@ class PdfClient:
         :param uid: uid of the task
         :param target_pdf_path: target path of the PDF
         """
-        request = pdf_pb2.DownloadRequest(uid=uid)
+        request = pdf_pb2.DownloadRequest(uid=uid, filename='report.pdf')
         reply = self.stub.download(request)
         with open(target_pdf_path, 'wb') as f:
             for chunk in reply:
                 f.write(chunk.content)
-    
-    def render_resources_to_pdf(self, zip_path: str, target_pdf_path: str, parameters: str):
+
+    def download_html(self, uid: str, target_html_path: str):
+        """
+        Download the PDF file of the given task
+        :param uid: uid of the task
+        :param target_pdf_path: target path of the PDF
+        """
+        request = pdf_pb2.DownloadRequest(uid=uid, filename='report.html')
+        reply = self.stub.download(request)
+        with open(target_html_path, 'wb') as f:
+            for chunk in reply:
+                f.write(chunk.content)
+
+    def render_resources_to_pdf(self, zip_path: str, target_pdf_path: str,
+                                target_html_path: str, parameters: str):
         uid = self.upload_resource(zip_path)
         self.render(uid, parameters)
         self.download(uid, target_pdf_path)
+        self.download_html(uid, target_html_path)
 
     def close(self):
         self.channel.close()
@@ -84,4 +98,7 @@ if __name__ == "__main__":
     zip_path = "/home/ziqiang_xu/zy/middle-platform/pdf/pdf-server/workplace/test-dir/test.zip"
     target_pdf_path = "/home/ziqiang_xu/zy/middle-platform/pdf/pdf-server/workplace/test-dir/"\
                       "client-test.pdf"
-    client.render_resources_to_pdf(zip_path, target_pdf_path, '{"k1": "v1"}')
+    target_html_path = "/home/ziqiang_xu/zy/middle-platform/pdf/pdf-server/workplace/test-dir/"\
+        "client-test.html"
+    client.render_resources_to_pdf(zip_path, target_pdf_path,
+                                   target_html_path, '{"k1": "v1"}')
