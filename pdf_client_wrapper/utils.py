@@ -31,7 +31,7 @@ def zip_dir(source_dir: str, target_file: str):
 
     # TODO write to bytes instead of file
     with zipfile.ZipFile(target_file, 'w') as zip_file:
-        path_iterator = os.walk(source_dir)
+        path_iterator = os.walk(source_dir, followlinks=True)
         for i in path_iterator:
             dirname = i[0]
             # print('iterator: ', i)
@@ -39,5 +39,5 @@ def zip_dir(source_dir: str, target_file: str):
                 full_path = os.path.join(dirname, filename)
                 realpath = os.path.realpath(full_path)
                 arcname = full_path[resources_path_length:]
-                print(f'related path: {arcname}')
+                # print(f'related path: {arcname}, real path: {realpath}')
                 zip_file.write(realpath, arcname)
