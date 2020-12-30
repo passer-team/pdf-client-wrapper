@@ -22,9 +22,10 @@ def gen_stream(file_path: str):
 
 def zip_dir(source_dir: str, target_file: str):
     """
-    将给定目录下的所有文件都添加到目标zip文件中
+    将给定目录下的所有文件都添加到目标zip文件中，遇到符号链接文件则读取其指向的文件。
 
-    Add all the files contained in the source_dir into the target_file(a zip file)
+    Add all the files contained in the source_dir into the target_file(a zip file),
+    read the target file which symbolic links file references to.
     """
     resources_path_length = len(source_dir)
 
@@ -36,6 +37,7 @@ def zip_dir(source_dir: str, target_file: str):
             # print('iterator: ', i)
             for filename in i[2]:
                 full_path = os.path.join(dirname, filename)
+                realpath = os.path.realpath(full_path)
                 arcname = full_path[resources_path_length:]
                 print(f'related path: {arcname}')
-                zip_file.write(full_path, arcname)
+                zip_file.write(realpath, arcname)
