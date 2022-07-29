@@ -1,3 +1,4 @@
+src/main/proto
 !gradle/wrapper/gradle-wrapper.jar
 HELP.md
 /target/

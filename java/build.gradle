@@ -9,15 +9,87 @@ buildscript {
 
 plugins {
     id 'java'
+    id 'signing'
 }
 
-group 'com.zyheal'
-version '1.0-SNAPSHOT'
+def appName = "pdf-client-wrapper"
+group 'io.gitee.passer-team'
+version '0.0.1'
 
 def grpcVersion = '1.35.0'
 
 apply plugin: 'idea'
 apply plugin: 'com.google.protobuf'
+
+// >>> Start of maven publish
+// 参考 https://central.sonatype.org/publish/publish-gradle/#deployment
+apply plugin: 'maven'  // 发布到maven仓库需要，
+apply plugin: 'signing'  // 发布到maven仓库需要
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+archivesBaseName = appName
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name appName
+                packaging 'jar'
+                // optionally artifactId can be defined here
+                description 'A pdf client wrapper, gRPC based application.'
+                url 'https://gitee.com/passer-team/pdf-client-wrapper'
+
+                scm {
+                    connection 'scm:git:https://gitee.com/passer-team/pdf-client-wrapper.git'
+                    developerConnection 'scm:git:https://gitee.com/passer-team/pdf-client-wrapper.git'
+                    url 'https://gitee.com/passer-team/pdf-client-wrapper'
+                }
+
+                licenses {
+                    license {
+                        name 'The MIT License'
+                        url 'https://opensource.org/licenses/MIT'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'daryl6'
+                        name 'Daryl Xu'
+                        email 'ziqiang_xu@qq.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
+// <<< End of maven publish
 
 repositories {
     mavenCentral()
@@ -34,6 +106,7 @@ dependencies {
     compile "io.grpc:grpc-netty-shaded:${grpcVersion}"
     compile "io.grpc:grpc-protobuf:${grpcVersion}"
     compile "io.grpc:grpc-stub:${grpcVersion}"
+    implementation("javax.annotation:javax.annotation-api:1.3.2")
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
